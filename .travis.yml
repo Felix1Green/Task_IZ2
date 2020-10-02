@@ -1,0 +1,20 @@
+language: c
+ 
+os:
+    - linux
+ 
+compiler:
+    - gcc
+ 
+install:
+    - source ci/travis/install-$TRAVIS_OS_NAME.sh
+ 
+script:
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
+    - ctest
+    - valgrind --leak-check=full --leak-resolution=med --track-origins=yes --vgdb=no ctest
+    - cd ..
+    - cppcheck --inconclusive --enable=all --language=c src/static_main.c /src/dynamic_main.c src/func.c static_library/lib_func.c dynamic_library/libd_func.c
